@@ -17,7 +17,7 @@ export default function Home({ data }) {
     current: defaultEndpoint,
     next: info?.next
   });
-  const { current } = page;
+  const { current, prev } = page;
 
   const [results, updateResults] = useState(defaultResults);
 
@@ -27,14 +27,19 @@ export default function Home({ data }) {
     async function request() {
       const res = await fetch(current)
       const nextData = await res.json();
-      const { info: nextInfo, results: nextResults } = nextData;
+      const { info: nextInfo, results: nextResults = [] } = nextData;
 
       updatePage(prev => {
         return {
           ...prev,
-          next: nextInfo?.next
+          ...nextInfo
         }
       });
+
+      if ( !nextInfo?.prev ) {
+        updateResults(nextResults);
+        return;
+      }
 
       updateResults(prev => {
         return [
@@ -49,9 +54,26 @@ export default function Home({ data }) {
   function handleLoadMore() {
     updatePage(prev => {
       return {
+        ...prev,
         current: page?.next
       }
     });
+  }
+
+  function handleOnSubmitSearch(e) {
+    e.preventDefault();
+
+    const { currentTarget = {} } = e;
+    const fields = Array.from(currentTarget?.elements);
+    const fieldQuery = fields.find(field => field.name === 'query');
+
+    const value = fieldQuery.value;
+
+    if ( value ) {
+      updatePage({
+        current: `https://rickandmortyapi.com/api/character/?name=${value}`
+      });
+    }
   }
 
   return (
@@ -66,6 +88,11 @@ export default function Home({ data }) {
           Wubba Lubba Dub Dub!
         </h1>
 
+        <form className="search" onSubmit={handleOnSubmitSearch}>
+          <input name="query" type="search" />
+          <button className="button">Search</button>
+        </form>
+
         <ul className="grid">
           {results.map(result => {
             const { id, name, image } = result;
@@ -76,16 +103,19 @@ export default function Home({ data }) {
                     <div className="char-thumb">
                       <img src={image} />
                     </div>
-                    { name }
+                    <p className="char-name">
+                      { name }
+                    </p>
                   </a>
                 </Link>
               </li>
             );
           })}
         </ul>
+
         {info?.next && (
-          <p>
-            <button onClick={handleLoadMore}>Load More</button>
+          <p className="load-more">
+            <button className="button" onClick={handleLoadMore}>Load More</button>
           </p>
         )}
 
@@ -241,6 +271,37 @@ export default function Home({ data }) {
           }
         }
 
+        .search {
+          margin-top: 2em;
+        }
+
+        .search input {
+          padding: .3em .6em;
+          margin-right: 1em;
+        }
+
+        .search input,
+        .search button {
+          font-size: 1.4em;
+        }
+
+        .card .char-name {
+          margin-top: .4em;
+          margin-bottom: 0;
+        }
+
+        .button {
+          color: white;
+          font-size: inherit;
+          background: blueviolet;
+          border: none;
+          border-radius: .2em;
+          padding: .4em .6em;
+        }
+
+        .load-more {
+          font-size: 1.4em;
+        }
 
       `}</style>
 

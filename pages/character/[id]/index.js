@@ -51,10 +51,10 @@ export default function Character({ data = {} }) {
           </div>
         </div>
 
-        <p>
+        <p className="back">
           <Link href="/">
-            <a>
-              &lt; Back to All Characters
+            <a className="button">
+              Back to All Characters
             </a>
           </Link>
         </p>
@@ -163,6 +163,19 @@ export default function Character({ data = {} }) {
           margin-right: 2em;
         }
 
+        .button {
+          color: white;
+          font-size: inherit;
+          background: blueviolet;
+          border: none;
+          border-radius: .2em;
+          padding: .4em .6em;
+        }
+
+        .back {
+          font-size: 1.2em;
+          margin-top: 2em;
+        }
 
       `}</style>
 
