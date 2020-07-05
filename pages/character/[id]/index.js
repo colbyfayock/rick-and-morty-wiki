@@ -159,8 +159,21 @@ export default function Character({ data = {} }) {
           margin-top: 2em;
         }
 
+        @media (max-width: 600px) {
+          .profile {
+            flex-direction: column;
+          }
+        }
+
         .profile-image {
           margin-right: 2em;
+        }
+
+        @media (max-width: 600px) {
+          .profile-image {
+            max-width: 100%;
+            margin: 0 auto;
+          }
         }
 
         .button {

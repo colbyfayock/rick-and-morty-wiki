@@ -238,6 +238,12 @@ export default function Home({ data }) {
           transition: color 0.15s ease, border-color 0.15s ease;
         }
 
+        @media (max-width: 600px) {
+          .card {
+            width: 100%;
+          }
+        }
+
         .card:hover,
         .card:focus,
         .card:active {
@@ -280,9 +286,23 @@ export default function Home({ data }) {
           margin-right: 1em;
         }
 
+        @media (max-width: 600px) {
+          .search input {
+            margin-right: 0;
+            margin-bottom: .5em;
+          }
+        }
+
         .search input,
         .search button {
           font-size: 1.4em;
+        }
+
+        @media (max-width: 600px) {
+          .search input,
+          .search button {
+            width: 100%;
+          }
         }
 
         .card .char-name {
