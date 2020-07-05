@@ -1,6 +1,59 @@
+import { useState, useEffect } from 'react';
 import Head from 'next/head'
+import Link from 'next/link'
 
-export default function Home() {
+const defaultEndpoint = `https://rickandmortyapi.com/api/character/`;
+
+export async function getServerSideProps() {
+  const res = await fetch(defaultEndpoint)
+  const data = await res.json();
+  return { props: { data } }
+}
+
+export default function Home({ data }) {
+  const { info, results: defaultResults = [] } = data;
+
+  const [page, updatePage] = useState({
+    current: defaultEndpoint,
+    next: info?.next
+  });
+  const { current } = page;
+
+  const [results, updateResults] = useState(defaultResults);
+
+  useEffect(() => {
+    if ( current === defaultEndpoint ) return;
+
+    async function request() {
+      const res = await fetch(current)
+      const nextData = await res.json();
+      const { info: nextInfo, results: nextResults } = nextData;
+
+      updatePage(prev => {
+        return {
+          ...prev,
+          next: nextInfo?.next
+        }
+      });
+
+      updateResults(prev => {
+        return [
+          ...prev,
+          ...nextResults
+        ]
+      });
+    }
+    request();
+  }, [current])
+
+  function handleLoadMore() {
+    updatePage(prev => {
+      return {
+        current: page?.next
+      }
+    });
+  }
+
   return (
     <div className="container">
       <Head>
@@ -10,42 +63,33 @@ export default function Home() {
 
       <main>
         <h1 className="title">
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Wubba Lubba Dub Dub!
         </h1>
 
-        <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p>
+        <ul className="grid">
+          {results.map(result => {
+            const { id, name, image } = result;
+            return (
+              <li className="card" key={id}>
+                <Link href="/character/[id]" as={`/character/${id}`}>
+                  <a className="char">
+                    <div className="char-thumb">
+                      <img src={image} />
+                    </div>
+                    { name }
+                  </a>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+        {info?.next && (
+          <p>
+            <button onClick={handleLoadMore}>Load More</button>
+          </p>
+        )}
 
-        <div className="grid">
-          <a href="https://nextjs.org/docs" className="card">
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
 
-          <a href="https://nextjs.org/learn" className="card">
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="card"
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="card"
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
       </main>
 
       <footer>
@@ -143,14 +187,18 @@ export default function Home() {
           align-items: center;
           justify-content: center;
           flex-wrap: wrap;
+          list-style: none;
 
           max-width: 800px;
+          padding: 0;
           margin-top: 3rem;
         }
 
         .card {
-          margin: 1rem;
-          flex-basis: 45%;
+          display: block;
+          flex-shrink: 1;
+          width: 30%;
+          margin: 1.5%;
           padding: 1.5rem;
           text-align: left;
           color: inherit;
@@ -178,6 +226,10 @@ export default function Home() {
           line-height: 1.5;
         }
 
+        .card img {
+          width: 100%;
+        }
+
         .logo {
           height: 1em;
         }
@@ -188,6 +240,8 @@ export default function Home() {
             flex-direction: column;
           }
         }
+
+
       `}</style>
 
       <style jsx global>{`
