@@ -1,13 +1,72 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import Head from 'next/head'
 import Link from 'next/link'
 
 const defaultEndpoint = `https://rickandmortyapi.com/api/character/`;
 
+const gridVariants = {
+  exit: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const gridMotionProps = {
+  initial: 'initial',
+  animate: 'enter',
+  exit: 'exit',
+  variants: gridVariants
+}
+
+const postVariants = {
+  initial: {
+    opacity: 0,
+    y: 20,
+    scale: .9
+  },
+  enter: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: .4
+    }
+  }
+};
+
+const postWhileHover = {
+  position: 'relative',
+  zIndex: 1,
+  background: 'white',
+  scale: [1, 1.4, 1.2],
+  rotate: [0, 10, -10, 0],
+  filter: [
+    'hue-rotate(0) contrast(100%)',
+    'hue-rotate(360deg) contrast(200%)',
+    'hue-rotate(45deg) contrast(300%)',
+    'hue-rotate(0) contrast(100%)'],
+  transition: {
+    duration: .2
+  }
+}
+
+const postMotionProps = {
+  initial: 'initial',
+  animate: 'enter',
+  variants: postVariants,
+  whileHover: postWhileHover
+}
+
 export async function getServerSideProps() {
   const res = await fetch(defaultEndpoint)
   const data = await res.json();
-  return { props: { data } }
+  return {
+    props: {
+      data
+    }
+  }
 }
 
 export default function Home({ data }) {
@@ -84,34 +143,49 @@ export default function Home({ data }) {
       </Head>
 
       <main>
-        <h1 className="title">
-          Wubba Lubba Dub Dub!
-        </h1>
+        <motion.div initial="hidden" animate="visible" variants={{
+          hidden: {
+            height: 100,
+            scale: .8,
+            opacity: 0
+          },
+          visible: {
+            scale: 1,
+            opacity: 1,
+            transition: {
+              delay: .4
+            }
+          },
+        }}>
+          <h1 className="title">
+            Wubba Lubba Dub Dub!
+          </h1>
+        </motion.div>
 
         <form className="search" onSubmit={handleOnSubmitSearch}>
           <input name="query" type="search" />
           <button className="button">Search</button>
         </form>
 
-        <ul className="grid">
+        <motion.ul className="grid" {...gridMotionProps}>
           {results.map(result => {
             const { id, name, image } = result;
             return (
-              <li className="card" key={id}>
+              <motion.li key={id} className="card" {...postMotionProps}>
                 <Link href="/character/[id]" as={`/character/${id}`}>
                   <a className="char">
                     <div className="char-thumb">
-                      <img src={image} />
+                      <img width={300} height={300} src={image} />
                     </div>
                     <p className="char-name">
                       { name }
                     </p>
                   </a>
                 </Link>
-              </li>
+              </motion.li>
             );
           })}
-        </ul>
+        </motion.ul>
 
         {info?.next && (
           <p className="load-more">
@@ -133,7 +207,7 @@ export default function Home({ data }) {
         </a>
       </footer>
 
-      <style jsx>{`
+      <style>{`
         .container {
           min-height: 100vh;
           padding: 0 0.5rem;
@@ -217,18 +291,18 @@ export default function Home({ data }) {
           align-items: center;
           justify-content: center;
           flex-wrap: wrap;
-          list-style: none;
 
           max-width: 800px;
-          padding: 0;
           margin-top: 3rem;
+
+          list-style:none;
+          margin-left: 0;
+          padding-left: 0;
         }
 
         .card {
-          display: block;
-          flex-shrink: 1;
-          width: 30%;
-          margin: 1.5%;
+          margin: 1rem;
+          flex-basis: 45%;
           padding: 1.5rem;
           text-align: left;
           color: inherit;
@@ -236,12 +310,6 @@ export default function Home({ data }) {
           border: 1px solid #eaeaea;
           border-radius: 10px;
           transition: color 0.15s ease, border-color 0.15s ease;
-        }
-
-        @media (max-width: 600px) {
-          .card {
-            width: 100%;
-          }
         }
 
         .card:hover,
@@ -260,10 +328,6 @@ export default function Home({ data }) {
           margin: 0;
           font-size: 1.25rem;
           line-height: 1.5;
-        }
-
-        .card img {
-          width: 100%;
         }
 
         .logo {
@@ -322,7 +386,6 @@ export default function Home({ data }) {
         .load-more {
           font-size: 1.4em;
         }
-
       `}</style>
 
       <style jsx global>{`
