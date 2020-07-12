@@ -1,9 +1,18 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## [freecodecamp Tutorial](https://www.freecodecamp.org/news/how-to-create-a-dynamic-rick-and-morty-wiki-web-app-with-next-js/)
+
+## [YouTube Tutorial](https://www.youtube.com/watch?v=iW39Merz0zE)
+
 ## Getting Started
 
-First, run the development server:
+First, install the `node_modules` and then run the development server:
 
+```bash
+npm install 
+#or 
+yarn install
+```
 ```bash
 npm run dev
 # or
