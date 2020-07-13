@@ -1,8 +1,12 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+[![FreeCodeCamp Tutorial](https://www.freecodecamp.org/news/content/images/size/w2000/2020/07/nextjs.jpg)](https://www.freecodecamp.org/news/how-to-create-a-dynamic-rick-and-morty-wiki-web-app-with-next-js/)
+
+# Rick and Morty Wiki - Nextjs
 
 ## [freecodecamp Tutorial](https://www.freecodecamp.org/news/how-to-create-a-dynamic-rick-and-morty-wiki-web-app-with-next-js/)
 
 ## [YouTube Tutorial](https://www.youtube.com/watch?v=iW39Merz0zE)
+
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
@@ -20,6 +24,8 @@ yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+![demo](https://www.freecodecamp.org/news/content/images/2020/07/rick-morty-wiki-nextjs-demo-1.jpg)
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
